@@ -6,6 +6,8 @@ import { Switch } from "./ui/switch";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
+const VERSION = "0.0.1"; // Update this when you make changes
+
 const CloudBaseCalculator = () => {
   const [temperature, setTemperature] = useState('');
   const [dewPoint, setDewPoint] = useState('');
@@ -72,18 +74,18 @@ const CloudBaseCalculator = () => {
     const roundResult = (value) => parseFloat(value.toFixed(2));
 
     setResults({
-      dewpointSpread: roundResult(convertResult(dewpointSpreadMethod + elevationM)),
-      espyMethod: roundResult(convertResult(espyMethod + elevationM)),
-      accurateLCL: roundResult(convertResult(accurateLCL + elevationM)),
-      stuveMethod: roundResult(convertResult(stuveMethod + elevationM)),
-      relativeHumidity: RH.toFixed(1),
-      agl: {
-        dewpointSpread: roundResult(convertResult(dewpointSpreadMethod)),
-        espyMethod: roundResult(convertResult(espyMethod)),
-        accurateLCL: roundResult(convertResult(accurateLCL)),
-        stuveMethod: roundResult(convertResult(stuveMethod)),
-      }
-    });
+        dewpointSpread: roundResult(convertResult(dewpointSpreadMethod) + (isMetric ? elevationM : convertToFeet(elevationM))),
+        espyMethod: roundResult(convertResult(espyMethod) + (isMetric ? elevationM : convertToFeet(elevationM))),
+        accurateLCL: roundResult(convertResult(accurateLCL) + (isMetric ? elevationM : convertToFeet(elevationM))),
+        stuveMethod: roundResult(convertResult(stuveMethod) + (isMetric ? elevationM : convertToFeet(elevationM))),
+        relativeHumidity: RH.toFixed(1),
+        agl: {
+          dewpointSpread: roundResult(convertResult(dewpointSpreadMethod)),
+          espyMethod: roundResult(convertResult(espyMethod)),
+          accurateLCL: roundResult(convertResult(accurateLCL)),
+          stuveMethod: roundResult(convertResult(stuveMethod)),
+        }
+      });
   };
 
   const calculateAccurateLCL = (tempC, dewC, pressureHPa) => {
@@ -105,6 +107,7 @@ const CloudBaseCalculator = () => {
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Cloud Base Height Calculator</CardTitle>
+        <span className="text-xs text-gray-500">v{VERSION}</span>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
