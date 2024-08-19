@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Switch } from "./ui/switch";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Thermometer, Droplets, Gauge, Mountain, Calculator } from 'lucide-react';
 
 const VERSION = "0.0.1"; // Update this when you make changes
 
@@ -104,14 +105,19 @@ const CloudBaseCalculator = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Cloud Base Height Calculator</CardTitle>
-        <span className="text-xs text-gray-500">v{VERSION}</span>
+    <Card className="w-full max-w-2xl mx-auto bg-white shadow-lg">
+      <CardHeader className="bg-sky-700 text-white">
+        <CardTitle className="flex justify-between items-center">
+          <span className="flex items-center">
+            <Calculator className="mr-2" />
+            Cloud Base Height Calculator
+          </span>
+          <span className="text-xs">v{VERSION}</span>
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
+      <CardContent className="p-6">
+        <div className="space-y-6">
+          <div className="flex justify-between items-center bg-sky-50 p-3 rounded-md">
             <label htmlFor="unit-toggle" className="text-sm font-medium text-gray-700">
               Temperature Unit
             </label>
@@ -125,7 +131,7 @@ const CloudBaseCalculator = () => {
               <span>°F</span>
             </div>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between items-center bg-sky-50 p-3 rounded-md">
             <label htmlFor="metric-toggle" className="text-sm font-medium text-gray-700">
               Height Unit
             </label>
@@ -140,7 +146,8 @@ const CloudBaseCalculator = () => {
             </div>
           </div>
           <div>
-            <label htmlFor="temperature" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="temperature" className="block text-sm font-medium text-gray-700 mb-1">
+              <Thermometer className="inline mr-2" size={18} />
               Temperature ({isCelsius ? '°C' : '°F'})
             </label>
             <Input
@@ -149,11 +156,12 @@ const CloudBaseCalculator = () => {
               value={temperature}
               onChange={(e) => setTemperature(e.target.value)}
               placeholder={`Enter temperature in ${isCelsius ? '°C' : '°F'}`}
-              className="mt-1"
+              className="w-full"
             />
           </div>
           <div>
-            <label htmlFor="dewPoint" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="dewPoint" className="block text-sm font-medium text-gray-700 mb-1">
+              <Droplets className="inline mr-2" size={18} />
               Dew Point ({isCelsius ? '°C' : '°F'})
             </label>
             <Input
@@ -162,11 +170,12 @@ const CloudBaseCalculator = () => {
               value={dewPoint}
               onChange={(e) => setDewPoint(e.target.value)}
               placeholder={`Enter dew point in ${isCelsius ? '°C' : '°F'}`}
-              className="mt-1"
+              className="w-full"
             />
           </div>
           <div>
-            <label htmlFor="pressure" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="pressure" className="block text-sm font-medium text-gray-700 mb-1">
+              <Gauge className="inline mr-2" size={18} />
               Atmospheric Pressure
             </label>
             <div className="flex space-x-2">
@@ -176,13 +185,13 @@ const CloudBaseCalculator = () => {
                 value={pressure}
                 onChange={(e) => setPressure(e.target.value)}
                 placeholder={`Enter pressure in ${barometerUnit}`}
-                className="mt-1 flex-grow"
+                className="flex-grow"
               />
               <Select value={barometerUnit} onValueChange={setBarometerUnit}>
                 <SelectTrigger className="w-[100px]">
                   <SelectValue placeholder="Unit" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="hPa">hPa</SelectItem>
                   <SelectItem value="inHg">inHg</SelectItem>
                   <SelectItem value="mmHg">mmHg</SelectItem>
@@ -191,7 +200,8 @@ const CloudBaseCalculator = () => {
             </div>
           </div>
           <div>
-            <label htmlFor="elevation" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="elevation" className="block text-sm font-medium text-gray-700 mb-1">
+              <Mountain className="inline mr-2" size={18} />
               Airport Elevation ({isMetric ? 'meters' : 'feet'})
             </label>
             <Input
@@ -200,10 +210,10 @@ const CloudBaseCalculator = () => {
               value={elevation}
               onChange={(e) => setElevation(e.target.value)}
               placeholder={`Enter elevation in ${isMetric ? 'meters' : 'feet'}`}
-              className="mt-1"
+              className="w-full"
             />
           </div>
-          <Button onClick={calculateCloudBase} className="w-full">
+          <Button onClick={calculateCloudBase} className="w-full bg-sky-600 hover:bg-sky-700">
             Calculate Cloud Base
           </Button>
           {error && (
@@ -212,16 +222,16 @@ const CloudBaseCalculator = () => {
             </Alert>
           )}
           {results && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">Estimated Cloud Base Height:</h3>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Dewpoint Spread Method: {results.dewpointSpread} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.dewpointSpread} {isMetric ? 'meters' : 'feet'} AGL)</li>
-                <li>Espy's Method: {results.espyMethod} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.espyMethod} {isMetric ? 'meters' : 'feet'} AGL)</li>
-                <li>Accurate LCL Calculation: {results.accurateLCL} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.accurateLCL} {isMetric ? 'meters' : 'feet'} AGL)</li>
-                <li>Stüve's Diagram Method: {results.stuveMethod} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.stuveMethod} {isMetric ? 'meters' : 'feet'} AGL)</li>
-                <li>Relative Humidity: {results.relativeHumidity}%</li>
+            <div className="mt-6 bg-sky-50 p-4 rounded-md">
+              <h3 className="text-lg font-semibold mb-3 text-sky-800">Estimated Cloud Base Height:</h3>
+              <ul className="space-y-2 text-sm">
+                <li><strong>Dewpoint Spread Method:</strong> {results.dewpointSpread} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.dewpointSpread} {isMetric ? 'meters' : 'feet'} AGL)</li>
+                <li><strong>Espy's Method:</strong> {results.espyMethod} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.espyMethod} {isMetric ? 'meters' : 'feet'} AGL)</li>
+                <li><strong>Accurate LCL Calculation:</strong> {results.accurateLCL} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.accurateLCL} {isMetric ? 'meters' : 'feet'} AGL)</li>
+                <li><strong>Stüve's Diagram Method:</strong> {results.stuveMethod} {isMetric ? 'meters' : 'feet'} MSL ({results.agl.stuveMethod} {isMetric ? 'meters' : 'feet'} AGL)</li>
+                <li><strong>Relative Humidity:</strong> {results.relativeHumidity}%</li>
               </ul>
-              <p className="mt-4 text-sm text-gray-600">
+              <p className="mt-4 text-xs text-gray-600">
                 Note: MSL = Mean Sea Level, AGL = Above Ground Level. These calculations are based on simplified models and may not account for all atmospheric conditions. Always consult official weather reports for flight planning.
               </p>
             </div>
